@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Company />
+    <Product />
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Laurynas Lazauskas</Authors>
+    <Description>A simple way to decorate a class with additional functionality using attributes.</Description>
+    <PackageLicenseExpression>https://licenses.nuget.org/MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/lawrence-laz/Decor.NET</PackageProjectUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Castle.Core" Version="4.4.0" />
+    <PackageReference Include="Castle.Core.AsyncInterceptor" Version="1.7.0" />
+  </ItemGroup>
+
+</Project>
