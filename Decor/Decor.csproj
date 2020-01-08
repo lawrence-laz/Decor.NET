@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Company />
-    <Product />
+    <Company>Laurynas Lazauskas</Company>
+    <Product>Decor</Product>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Laurynas Lazauskas</Authors>
     <Description>A simple way to decorate a class with additional functionality using attributes.</Description>
-    <PackageLicenseExpression>https://licenses.nuget.org/MIT</PackageLicenseExpression>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/lawrence-laz/Decor.NET</PackageProjectUrl>
   </PropertyGroup>
 

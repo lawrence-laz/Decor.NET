@@ -7,6 +7,8 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/lawrence-laz/Decor.NET</PackageProjectUrl>
     <RootNamespace>Decor</RootNamespace>
+    <Company>Laurynas Lazauskas</Company>
+    <Product>Decor.Extensions.Microsoft.DependencyInjection</Product>
   </PropertyGroup>
 
   <ItemGroup>
