@@ -12,6 +12,11 @@ namespace Decor
 
         private ProxyGenerator _proxyGenerator = new ProxyGenerator();
 
+        public Decorator()
+        {
+            DecoratorProvider = new ActivatorDecoratorProvider();
+        }
+
         public Decorator(IDecoratorProvider decoratorProvider)
         {
             DecoratorProvider = decoratorProvider ?? new ActivatorDecoratorProvider();
