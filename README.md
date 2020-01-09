@@ -1,4 +1,5 @@
 # Decor.NET
+[![NuGet Version](https://img.shields.io/nuget/v/Decor.svg)](https://www.nuget.org/packages/Decor "NuGet Version")
 
 ### What is it?
 Sometimes there is a need to write code that should affect a big part of a code base, like logging, performance tracking, etc. But adding this unrelated code to each method is messy. Instead of that, code can be written in one place and attached dynamically where needed.
