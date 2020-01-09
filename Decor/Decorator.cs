@@ -2,7 +2,6 @@
 using Decor.Internal;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace Decor
 {
@@ -63,11 +62,9 @@ namespace Decor
             var interceptors = new List<AttributeInterceptor>();
             foreach (var attribute in attributes)
             {
-                var methods = new HashSet<MethodInfo>(methodsAndAttributes
-                    .Where(x => x.Attributes.Contains(attribute))
-                    .Select(x => x.Method).Distinct());
-
-                var interceptor = new AttributeInterceptor(DecoratorProvider.Get(attribute.DecoratorType), methods);
+                var interceptor = new AttributeInterceptor(
+                    DecoratorProvider,
+                    attribute.DecoratorType);
 
                 interceptors.Add(interceptor);
             }

@@ -1,54 +1,71 @@
 ﻿using Castle.DynamicProxy;
-using System.Collections.Generic;
+using System;
+using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Decor.Internal
 {
-    public class AttributeInterceptor : ProcessingAsyncInterceptor<object>
+    public class AttributeInterceptor : AsyncInterceptor
     {
-        private readonly IDecorator _decorator;
-        private readonly ISet<MethodInfo> _targetMethods;
+        private IBaseDecorator Decorator 
+            => _decorator ?? (_decorator = _decoratorProvider.Get(_decoratorType));
 
-        public AttributeInterceptor(IDecorator decorator, ISet<MethodInfo> targetMethods)
+        private IBaseDecorator _decorator;
+        private readonly IDecoratorProvider _decoratorProvider;
+        private readonly Type _decoratorType;
+
+        public AttributeInterceptor(IDecoratorProvider decoratorProvider, Type decoratorType)
         {
-            _decorator = decorator;
-            _targetMethods = targetMethods;
+            _decoratorProvider = decoratorProvider;
+            _decoratorType = decoratorType;
         }
 
-        protected override object StartingInvocation(IInvocation invocation)
+        protected async override Task BeforeInvocation(IInvocation invocation)
         {
-            if (IsInTargetMethods(invocation.MethodInvocationTarget, invocation.Method))
+            if (!IsInTargetMethods(invocation.MethodInvocationTarget, invocation.Method))
             {
-                var callInfo = new CallInfo(invocation);
-                _decorator.OnBefore(callInfo);
+                return;
             }
 
-            return null;
+            var callInfo = new CallInfo(invocation);
+
+            if (Decorator is IDecorator syncDecorator)
+            {
+                syncDecorator.OnBefore(callInfo);
+            }
+            else if (Decorator is IDecoratorAsync asyncDecorator)
+            {
+                await asyncDecorator.OnBefore(callInfo);
+            }
         }
 
-        protected override void CompletedInvocation(IInvocation invocation, object state)
+        protected async override Task AfterInvocation(IInvocation invocation)
         {
-            if (IsInTargetMethods(invocation.MethodInvocationTarget, invocation.Method))
+            if (!IsInTargetMethods(invocation.MethodInvocationTarget, invocation.Method))
             {
-                var callInfo = new CallInfo(invocation);
-                _decorator.OnAfter(callInfo);
+                return;
+            }
+
+            var callInfo = new CallInfo(invocation);
+
+            if (Decorator is IDecorator syncDecorator)
+            {
+                syncDecorator.OnAfter(callInfo);
+            }
+            else if (Decorator is IDecoratorAsync asyncDecorator)
+            {
+                await asyncDecorator.OnAfter(callInfo);
             }
         }
 
         private bool IsInTargetMethods(params MethodInfo[] methods)
         {
-            // TODO: Test which is more performant--going through the custom attributes or checking if
-            // an ISet<MethodInfo> contains this method.
-
             foreach (var method in methods)
             {
-                if (_targetMethods.Contains(method))
-                {
-                    return true;
-                }
+                var attributes = method.GetCustomAttributes<DecorateAttribute>(false);
 
-                if (method.IsGenericMethod && !method.IsGenericMethodDefinition
-                    && _targetMethods.Contains(method.GetGenericMethodDefinition()))
+                if (attributes.Any(attribute => attribute.DecoratorType == _decoratorType))
                 {
                     return true;
                 }

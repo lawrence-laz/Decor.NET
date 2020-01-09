@@ -9,9 +9,10 @@ namespace Decor
 
         public DecorateAttribute(Type decoratorType)
         {
-            if (!typeof(IDecorator).IsAssignableFrom(decoratorType))
+            if (!typeof(IDecorator).IsAssignableFrom(decoratorType)
+                && !typeof(IDecoratorAsync).IsAssignableFrom(decoratorType))
             {
-                throw new ArgumentException($"Type '{decoratorType.Name}' does not implement the interface '{nameof(IDecorator)}'", nameof(decoratorType));
+                throw new ArgumentException($"Type '{decoratorType.Name}' does not implement the interface '{nameof(IDecorator)}' or '{nameof(IDecoratorAsync)}'", nameof(decoratorType));
             }
 
             DecoratorType = decoratorType;

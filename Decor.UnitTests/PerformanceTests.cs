@@ -16,7 +16,7 @@ namespace Decor.UnitTests
             Output = output;
         }
 
-        [Fact]
+        [Fact(DisplayName = "<300 ms on first call.")]
         public void Method_CalledFirstTime_ShouldTakeLessThan300Ms()
         {
             // Arrange
@@ -33,7 +33,7 @@ namespace Decor.UnitTests
             Assert.True(actualTime < 300, $"Initial call to a decorated class took {actualTime} ms.");
         }
 
-        [Fact]
+        [Fact(DisplayName = "<5 ms after first call.")]
         public void Method_CalledAfterTheFirstTime_ShouldTakeLessThan5Ms()
         {
             // Arrange
@@ -53,10 +53,13 @@ namespace Decor.UnitTests
         private IServiceProvider GetServices()
             => new ServiceCollection()
                 .AddDecor()
-                .AddScoped<SomeDecorator>()
-                .AddScoped<AnotherDecorator>()
+                .AddTransient<SomeAsyncDecorator>()
+                .AddTransient<SomeDecorator>()
+                .AddTransient<AnotherDecorator>()
+                .AddTransient<DecoratorWithDependencies>()
                 .AddTransientDecorated<SomeClass>()
-                .AddScopedDecorated<ISomeInterface, SomeClass>()
+                .AddTransientDecorated<ISomeInterface, SomeClass>()
+                .AddTransient<SomeDependency>()
                 .BuildServiceProvider();
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Decor.Internal;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace Decor.Extensions.Microsoft.DependencyInjection.Internal
@@ -12,9 +13,9 @@ namespace Decor.Extensions.Microsoft.DependencyInjection.Internal
             _services = services;
         }
 
-        public IDecorator Get(Type decoratorType)
+        public IBaseDecorator Get(Type decoratorType)
         {
-            return (IDecorator)_services.GetRequiredService(decoratorType);
+            return (IBaseDecorator)_services.GetRequiredService(decoratorType);
         }
     }
 }

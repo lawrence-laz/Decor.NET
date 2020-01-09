@@ -47,7 +47,7 @@ namespace Decor.UnitTests
             Assert.Equal(expectedType, actualAfter.GenericArguments[0]);
         }
 
-        private T UnwrapProxy<T>(T proxy) 
+        private T UnwrapProxy<T>(T proxy)
             => ProxyUtil.IsProxy(proxy)
                 ? (T)proxy.GetType()
                     .GetField("__target", BindingFlags.NonPublic | BindingFlags.Instance)
@@ -57,10 +57,13 @@ namespace Decor.UnitTests
         private IServiceProvider GetServices()
             => new ServiceCollection()
                 .AddDecor()
+                .AddSingleton<SomeAsyncDecorator>()
                 .AddSingleton<SomeDecorator>()
                 .AddSingleton<AnotherDecorator>()
+                .AddSingleton<DecoratorWithDependencies>()
                 .AddTransientDecorated<SomeClass>()
                 .AddScopedDecorated<ISomeInterface, SomeClass>()
+                .AddTransient<SomeDependency>()
                 .BuildServiceProvider();
     }
 }

@@ -27,6 +27,22 @@ namespace Decor.UnitTests
         }
 
         [Fact]
+        public async Task Method_WithAsyncAttributeInClass_ShouldCallDecorMethods()
+        {
+            // Arrange
+            var services = GetServices();
+            var decorator = services.GetService<SomeAsyncDecorator>();
+            var sut = services.GetService<ISomeInterface>();
+
+            // Act
+            await sut.AsyncAttributeInClassWithReturnMethod<object>(null);
+
+            // Assert
+            Assert.Equal(1, decorator.OnAfterCallCount);
+            Assert.Equal(1, decorator.OnBeforeCallCount);
+        }
+
+        [Fact]
         public void Method_WithAttributeInInterface_ShouldCallDecorMethods()
         {
             // Arrange
@@ -141,13 +157,46 @@ namespace Decor.UnitTests
             Assert.Equal(expectedReturnValue, actualReturnValue);
         }
 
+        [Theory, AutoData]
+        public async Task Method_WithAsyncDecorAndReturn_ShouldReturnTheSame(int expectedReturnValue)
+        {
+            // Arrange
+            var services = GetServices();
+            var sut = services.GetService<ISomeInterface>();
+
+            // Act
+            var actualReturnValue = await sut.AsyncAttributeInClassWithReturnMethod(expectedReturnValue);
+
+            // Assert
+            Assert.Equal(expectedReturnValue, actualReturnValue);
+        }
+
+        [Fact]
+        public void Method_WithDecoratorWithDependencies_ShouldInjectDependencies()
+        {
+            // Arrange
+            var services = GetServices();
+            var sut = services.GetService<SomeClass>();
+
+            // Act
+            sut.MethodForDecoratorWithDependencies();
+
+            // Assert
+            var decorator = services.GetService<DecoratorWithDependencies>();
+            Assert.Equal(2, decorator.CallCount);
+            Assert.NotNull(decorator.SomeDependency);
+        }
+
         private IServiceProvider GetServices()
             => new ServiceCollection()
                 .AddDecor()
                 .AddSingleton<SomeDecorator>()
+                .AddSingleton<SomeAsyncDecorator>()
                 .AddSingleton<AnotherDecorator>()
+                .AddSingleton<DecoratorWithDependencies>()
                 .AddTransientDecorated<SomeClass>()
                 .AddScopedDecorated<ISomeInterface, SomeClass>()
+                .AddTransient<SomeDependency>()
                 .BuildServiceProvider();
     }
 }

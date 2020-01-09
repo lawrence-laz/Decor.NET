@@ -7,6 +7,8 @@ namespace Decor.UnitTests.Data
     {
         void AttributeInClassMethod();
 
+        Task<T> AsyncAttributeInClassWithReturnMethod<T>(T value);
+
         T AttributeInClassWithReturnMethod<T>(T value);
 
         [Decorate(typeof(SomeDecorator))]

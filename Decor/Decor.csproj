@@ -11,6 +11,7 @@
     <PackageProjectUrl>https://github.com/lawrence-laz/Decor.NET</PackageProjectUrl>
     <PackageTags>decorator dynamic-proxy aspect-oriented-programming</PackageTags>
     <Copyright>Copyright 2020</Copyright>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
