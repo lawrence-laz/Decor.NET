@@ -1,7 +1,7 @@
 # Decor.NET
 
 ### What is it?
-Sometimes we need to write some code that affects the whole code base, like logging. But adding this unrelated code to each method is messy. Instead we can write this code in one place and apply it to any method we want dynamically.
+Sometimes there is a need to write code that should affect a big part of a code base, like logging, performance tracking, etc. But adding this unrelated code to each method is messy. Instead of that, code can be written in one place and attached dynamically where needed.
 
 Decor makes it easy to add additional behaviour to existing methods using the C# attributes and without modifying the target method's body.
 
@@ -26,7 +26,7 @@ Apply a decorator to appropriate methods using the attribute `[Decorate(typeof(.
 public class SomeClass
 {
     [Decorate(typeof(LoggingDecorator))]
-    public void SomeMethod() 
+    public virtual void SomeMethod() 
     {
         // The code inside the decorated method is left unchanged. 
     }
