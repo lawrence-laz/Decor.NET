@@ -9,6 +9,8 @@
     <Description>A simple way to decorate a class with additional functionality using attributes.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/lawrence-laz/Decor.NET</PackageProjectUrl>
+    <PackageTags>decorator dynamic-proxy aspect-oriented-programming</PackageTags>
+    <Copyright>Copyright 2020</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

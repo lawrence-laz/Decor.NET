@@ -9,6 +9,8 @@
     <RootNamespace>Decor</RootNamespace>
     <Company>Laurynas Lazauskas</Company>
     <Product>Decor.Extensions.Microsoft.DependencyInjection</Product>
+    <PackageTags>decorator dynamic-proxy aspect-oriented-programming microsoft-dependency-injection</PackageTags>
+    <Copyright>Copyright 2020</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
