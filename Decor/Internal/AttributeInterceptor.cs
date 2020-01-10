@@ -1,5 +1,4 @@
-﻿using Castle.DynamicProxy;
-using System;
+﻿using System;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -21,14 +20,12 @@ namespace Decor.Internal
             _decoratorType = decoratorType;
         }
 
-        protected async override Task BeforeInvocation(IInvocation invocation)
+        protected async override Task BeforeInvocation(CallInfo callInfo)
         {
-            if (!IsInTargetMethods(invocation.MethodInvocationTarget, invocation.Method))
+            if (!IsInTargetMethods(callInfo.Invocation.MethodInvocationTarget, callInfo.Invocation.Method))
             {
                 return;
             }
-
-            var callInfo = new CallInfo(invocation);
 
             if (Decorator is IDecorator syncDecorator)
             {
@@ -40,14 +37,12 @@ namespace Decor.Internal
             }
         }
 
-        protected async override Task AfterInvocation(IInvocation invocation)
+        protected async override Task AfterInvocation(CallInfo callInfo)
         {
-            if (!IsInTargetMethods(invocation.MethodInvocationTarget, invocation.Method))
+            if (!IsInTargetMethods(callInfo.Invocation.MethodInvocationTarget, callInfo.Invocation.Method))
             {
                 return;
             }
-
-            var callInfo = new CallInfo(invocation);
 
             if (Decorator is IDecorator syncDecorator)
             {

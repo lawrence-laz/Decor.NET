@@ -1,4 +1,4 @@
-﻿using Decor.UnitTests.Data;
+﻿using Decor.UnitTests.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Diagnostics;

@@ -7,11 +7,13 @@ namespace Decor.Internal
     {
         public void InterceptSynchronous(IInvocation invocation)
         {
-            BeforeInvocation(invocation).Wait();
+            var callInfo = new CallInfo(invocation);
+
+            BeforeInvocation(callInfo).Wait();
 
             invocation.Proceed();
 
-            AfterInvocation(invocation).Wait();
+            AfterInvocation(callInfo).Wait();
         }
 
         public void InterceptAsynchronous(IInvocation invocation)
@@ -27,33 +29,35 @@ namespace Decor.Internal
         private async Task WrapInvocationInTask(IInvocation invocation)
         {
             var proceed = invocation.CaptureProceedInfo();
+            var callInfo = new CallInfo(invocation);
 
-            await BeforeInvocation(invocation);
+            await BeforeInvocation(callInfo);
 
             proceed.Invoke();
 
             await ((Task)invocation.ReturnValue).ConfigureAwait(false);
 
-            await AfterInvocation(invocation);
+            await AfterInvocation(callInfo);
         }
 
         private async Task<TResult> WrapInvocationInTaskWithResult<TResult>(IInvocation invocation)
         {
             var proceed = invocation.CaptureProceedInfo();
+            var callInfo = new CallInfo(invocation);
 
-            await BeforeInvocation(invocation);
+            await BeforeInvocation(callInfo);
 
             proceed.Invoke();
 
             TResult result = await ((Task<TResult>)invocation.ReturnValue).ConfigureAwait(false);
 
-            await AfterInvocation(invocation);
+            await AfterInvocation(callInfo);
 
             return result;
         }
 
-        protected virtual Task BeforeInvocation(IInvocation invocation) => Task.CompletedTask;
+        protected virtual Task BeforeInvocation(CallInfo callInfo) => Task.CompletedTask;
 
-        protected virtual Task AfterInvocation(IInvocation invocation) => Task.CompletedTask;
+        protected virtual Task AfterInvocation(CallInfo callInfo) => Task.CompletedTask;
     }
 }

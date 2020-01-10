@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace Decor.UnitTests.Data
+namespace Decor.UnitTests.Utils
 {
     public class SomeClass : ISomeInterface
     {

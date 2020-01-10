@@ -1,9 +1,7 @@
 ﻿using AutoFixture.Xunit2;
-using Castle.DynamicProxy;
-using Decor.UnitTests.Data;
+using Decor.UnitTests.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Reflection;
 using Xunit;
 
 namespace Decor.UnitTests
@@ -11,59 +9,48 @@ namespace Decor.UnitTests
     public class CallInfoTests
     {
         [Theory, AutoData]
-        public void Method_WithBeforeAndAfterDecorators_ShouldGetCallInfo(int expectedReturnValue)
+        public void Method_WithDecorator_ShouldGetFilledCallInfo(int expectedReturnValue)
         {
             // Arrange
             var services = GetServices();
-            var decorator = services.GetService<SomeDecorator>();
-            var sut = services.GetService<ISomeInterface>();
-            var expectedType = expectedReturnValue.GetType();
-            var expectedMethodName = nameof(sut.AttributeInClassWithReturnMethod);
+            var decorator = services.GetService<TestDecorator>();
+            var sut = services.GetService<TestClass>();
+
+            var expectedArgumentType = expectedReturnValue.GetType();
+            var expectedObject = sut.UnwrapProxy();
+            var expectedMethodName = nameof(sut.Method);
 
             // Act
-            var actualReturnValue = sut.AttributeInClassWithReturnMethod(expectedReturnValue);
+            sut.Method(expectedReturnValue);
 
             // Assert
-            var actualBefore = decorator.CallInfoBefore;
-            var actualAfter = decorator.CallInfoAfter;
-            var expectedObject = UnwrapProxy(sut);
+            var actual = decorator.CallInfo;
 
-            Assert.NotNull(actualBefore);
-            Assert.NotNull(actualAfter);
-
-            Assert.Equal(expectedMethodName, actualBefore.Method.Name);
-            Assert.Equal(expectedMethodName, actualAfter.Method.Name);
-
-            Assert.Equal(expectedObject, actualBefore.Object);
-            Assert.Equal(expectedObject, actualAfter.Object);
-
-            Assert.Equal(expectedReturnValue, actualBefore.ReturnValue);
-            Assert.Equal(expectedReturnValue, actualAfter.ReturnValue);
-
-            Assert.Equal(expectedReturnValue, (int)actualBefore.Arguments[0]);
-            Assert.Equal(expectedReturnValue, (int)actualAfter.Arguments[0]);
-
-            Assert.Equal(expectedType, actualBefore.GenericArguments[0]);
-            Assert.Equal(expectedType, actualAfter.GenericArguments[0]);
+            Assert.NotNull(actual);
+            Assert.Equal(1, actual.GetState<Counter>().Count);
+            Assert.Equal(expectedMethodName, actual.Method.Name);
+            Assert.Equal(expectedObject, actual.Object);
+            Assert.Equal(expectedReturnValue, actual.ReturnValue);
+            Assert.Equal(expectedReturnValue, (int)actual.Arguments[0]);
+            Assert.Equal(expectedArgumentType, actual.GenericArguments[0]);
         }
-
-        private T UnwrapProxy<T>(T proxy)
-            => ProxyUtil.IsProxy(proxy)
-                ? (T)proxy.GetType()
-                    .GetField("__target", BindingFlags.NonPublic | BindingFlags.Instance)
-                    .GetValue(proxy)
-                : proxy;
 
         private IServiceProvider GetServices()
             => new ServiceCollection()
                 .AddDecor()
-                .AddSingleton<SomeAsyncDecorator>()
-                .AddSingleton<SomeDecorator>()
-                .AddSingleton<AnotherDecorator>()
-                .AddSingleton<DecoratorWithDependencies>()
-                .AddTransientDecorated<SomeClass>()
-                .AddScopedDecorated<ISomeInterface, SomeClass>()
-                .AddTransient<SomeDependency>()
+                .AddSingleton<TestDecorator>()
+                .AddTransientDecorated<TestClass>()
                 .BuildServiceProvider();
+
+        public class TestClass { [Decorate(typeof(TestDecorator))] public virtual T Method<T>(T value) => value; }
+
+        public class TestDecorator : IDecorator
+        {
+            public CallInfo CallInfo { get; set; }
+
+            public void OnBefore(CallInfo callInfo) => (CallInfo = callInfo).SetState(new Counter());
+
+            public void OnAfter(CallInfo callInfo) => callInfo.GetState<Counter>().Count++;
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Decor.UnitTests.Data
+﻿namespace Decor.UnitTests.Utils
 {
     public class DecoratorWithDependencies : IDecorator
     {
