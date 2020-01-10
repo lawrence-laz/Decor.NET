@@ -7,18 +7,29 @@ Sometimes there is a need to write code that should affect a big part of a code 
 Decor makes it easy to add additional behaviour to existing methods using the C# attributes and without modifying the target method's body.
 
 ### How to get started?
-Create a decorator for cross-cutting code like logging.
+Create a decorator implementing `IDecorator` or `IDecoratorAsync` interfaces. For example a profiler decorator would look like this:
 ```csharp
-public class LoggingDecorator : IDecorator
+public class ProfilerDecorator : IDecorator // Asynchronous alternative is IDecoratorAsync.
 {
+    public ILogger Logger { get; }
+    
+    public ProfilerDecorator(ILogger logger)
+    {
+        // Dependency injection provided by NuGet package Decor.Extensions.Microsoft.DependencyInjection.
+        Logger = logger;
+    }
+
     public void OnBefore(CallInfo callInfo)
     {
-        // Do the logging before method is called here...
+        // State is any object to be transfered between OnBefore and OnAfter.
+        callInfo.SetState(Stopwatch.StartNew());
     }
 
     public void OnAfter(CallInfo callInfo)
     {
-        // And after the method here...
+        var methodName = callInfo.Method.Name;
+        var elapsedTime = callInfo.GetState<Stopwatch>().ElapsedMilliseconds;
+        Logger.Log($"Method {methodName} took {elapsedTime} ms to execute.");
     }
 }
 ```
@@ -37,6 +48,7 @@ Add Decor, the created decorator and the decorated class to dependency container
 ```csharp
 services.AddDecor()
     .AddTransient<LoggingDecorator>()
-    .AddTransientDecorated<SomeClass>();
+    .AddTransientDecorated<SomeClass>(); 
+    // Notice the '...Decorated' postfix. It is needed for `[Decorate]` attribute to take effect.
 ```
 And that's it! Each time the method with an attribute is invoked—the respective decorator will be invoked as well.
