@@ -25,9 +25,10 @@ namespace Decor.UnitTests
 
             // Assert
             var actual = decorator.CallInfo;
+            var actualCalls = actual.GetState<Counter>();
 
             Assert.NotNull(actual);
-            Assert.Equal(1, actual.GetState<Counter>().Count);
+            Assert.Equal(2, actualCalls.Count);
             Assert.Equal(expectedMethodName, actual.Method.Name);
             Assert.Equal(expectedObject, actual.Object);
             Assert.Equal(expectedReturnValue, actual.ReturnValue);
@@ -48,7 +49,7 @@ namespace Decor.UnitTests
         {
             public CallInfo CallInfo { get; set; }
 
-            public void OnBefore(CallInfo callInfo) => (CallInfo = callInfo).SetState(new Counter());
+            public void OnBefore(CallInfo callInfo) => (CallInfo = callInfo).SetState(new Counter { Count = 1 });
 
             public void OnAfter(CallInfo callInfo) => callInfo.GetState<Counter>().Count++;
         }
