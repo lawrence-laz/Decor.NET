@@ -11,7 +11,10 @@
     <PackageProjectUrl>https://github.com/lawrence-laz/Decor.NET</PackageProjectUrl>
     <PackageTags>decorator dynamic-proxy aspect-oriented-programming</PackageTags>
     <Copyright>Copyright 2020</Copyright>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
+    <PackageReleaseNotes>Added a CallInfo.SetState(object) and CallInfo.GetState&lt;T&gt;() methods to transfer state between OnBefore and OnAfter methods. Use this to transfer objects like Stopwatch between the methods instead of a class property, as property can be overwritten by another call.</PackageReleaseNotes>
+    <RepositoryUrl>https://github.com/lawrence-laz/Decor.NET</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
