@@ -37,7 +37,7 @@ Apply a decorator to appropriate methods using the attribute `[Decorate(typeof(.
 ```csharp
 public class SomeClass
 {
-    [Decorate(typeof(LoggingDecorator))]
+    [Decorate(typeof(ProfilerDecorator))]
     public virtual void SomeMethod() 
     {
         // The code inside the decorated method is left unchanged. 
@@ -47,7 +47,7 @@ public class SomeClass
 Add Decor, the created decorator and the decorated class to dependency container.
 ```csharp
 services.AddDecor()
-    .AddTransient<LoggingDecorator>()
+    .AddTransient<ProfilerDecorator>()
     .AddTransientDecorated<SomeClass>(); 
     // Notice the '...Decorated' postfix. It is needed for `[Decorate]` attribute to take effect.
 ```
