@@ -18,7 +18,6 @@ namespace Decor.Internal
                     methods.AddRange(@interface.GetMethods());
                 }
 
-                methods.AddRange(type.GetMethods());
                 type = type.BaseType;
             }
 
