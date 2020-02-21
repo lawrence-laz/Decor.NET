@@ -1,5 +1,6 @@
 ﻿using Castle.DynamicProxy;
 using Decor.Internal;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,7 +19,7 @@ namespace Decor
 
         public Decorator(IDecoratorProvider decoratorProvider)
         {
-            DecoratorProvider = decoratorProvider ?? new ActivatorDecoratorProvider();
+            DecoratorProvider = decoratorProvider ?? throw new ArgumentNullException(nameof(decoratorProvider));
         }
 
         public TInterface For<TInterface, TImplementation>(TImplementation implementation) where TImplementation : TInterface
