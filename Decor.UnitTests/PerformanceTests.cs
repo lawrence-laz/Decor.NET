@@ -1,7 +1,8 @@
-﻿using Decor.UnitTests.Utils;
+﻿using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -16,50 +17,69 @@ namespace Decor.UnitTests
             Output = output;
         }
 
-        [Fact(DisplayName = "<300 ms on first call.")]
+        [Fact(DisplayName = "<200 ms on first call.")]
         public void Method_CalledFirstTime_ShouldTakeLessThan300Ms()
         {
             // Arrange
             var services = GetServices();
-            services.GetService<SomeDecorator>(); // Warm up ServiceProvider
+            services.GetService<TestDecorator>(); // Warm up ServiceProvider
             var stopwatch = Stopwatch.StartNew();
 
             // Act
-            services.GetService<ISomeInterface>().AttributeInClassMethod();
+            services.GetService<ISomeInterface>().Method();
 
             // Assert
             var actualTime = stopwatch.ElapsedMilliseconds;
             Output.WriteLine($"Initial call took '{actualTime}' ms.");
-            Assert.True(actualTime < 300, $"Initial call to a decorated class took {actualTime} ms.");
+            actualTime.Should().BeLessThan(200);
         }
 
-        [Fact(DisplayName = "<5 ms after first call.")]
+        [Fact(DisplayName = "<=1 ms after first call.")]
         public void Method_CalledAfterTheFirstTime_ShouldTakeLessThan5Ms()
         {
             // Arrange
             var services = GetServices();
-            services.GetService<ISomeInterface>().AttributeInClassMethod();
+            services.GetService<ISomeInterface>().Method(); // Warm up dynamic proxy
             var stopwatch = Stopwatch.StartNew();
 
             // Act
-            services.GetService<ISomeInterface>().AttributeInClassMethod();
+            services.GetService<ISomeInterface>().Method();
 
             // Assert
             var actualTime = stopwatch.ElapsedMilliseconds;
             Output.WriteLine($"Subsequent call took '{actualTime}' ms.");
-            Assert.True(actualTime < 5, $"Subsequent call to a decorated class took {actualTime} ms.");
+            actualTime.Should().BeLessThan(2);
+        }
+
+        #region Setup
+        public class TestDecorator : IDecorator
+        {
+            public int CallCount { get; set; }
+
+            public async Task OnInvoke(Call call)
+            {
+                CallCount++;
+                await call.Next();
+            }
+        }
+
+        public interface ISomeInterface
+        {
+            [Decorate(typeof(TestDecorator))]
+            void Method();
+        }
+
+        public class SomeClass : ISomeInterface
+        {
+            public void Method() { }
         }
 
         private IServiceProvider GetServices()
             => new ServiceCollection()
                 .AddDecor()
-                .AddTransient<SomeAsyncDecorator>()
-                .AddTransient<SomeDecorator>()
-                .AddTransient<AnotherDecorator>()
-                .AddTransient<DecoratorWithDependencies>()
-                .AddTransientDecorated<SomeClass>()
+                .AddSingleton<TestDecorator>()
                 .AddTransientDecorated<ISomeInterface, SomeClass>()
-                .AddTransient<SomeDependency>()
                 .BuildServiceProvider();
+        #endregion
     }
 }

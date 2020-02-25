@@ -1,27 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Decor.Internal
 {
-    public static class TypeExtensions
+    internal static class TypeExtensions
     {
-        internal static IEnumerable<MethodInfo> GetAllMethods(this Type type)
+        internal static IEnumerable<MethodInfo> GetDecoratableMethods(this Type type)
+            => type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
+                .Where(x => !x.IsSpecialName);
+
+        internal static MethodInfo GetInterfaceMethod(this MethodInfo implementation)
         {
-            var methods = new List<MethodInfo>();
-            while (type != null)
+            var interfaces = implementation.DeclaringType.GetInterfaces();
+            foreach (var @interface in interfaces)
             {
-                methods.AddRange(type.GetMethods());
+                var map = implementation.DeclaringType.GetInterfaceMap(@interface);
+                var index = Array.IndexOf(map.TargetMethods, implementation);
 
-                foreach (var @interface in type.GetInterfaces())
+                if (index != -1)
                 {
-                    methods.AddRange(@interface.GetMethods());
+                    return map.InterfaceMethods[index];
                 }
-
-                type = type.BaseType;
             }
 
-            return methods;
+            return null;
         }
+
+        internal static bool IsAsync(this MethodInfo method) => method.GetCustomAttribute(typeof(AsyncStateMachineAttribute)) != null;
     }
 }

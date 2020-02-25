@@ -1,22 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
 
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AutoFixture.Xunit2" Version="4.11.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
-    <PackageReference Include="xunit" Version="2.4.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
-    <PackageReference Include="coverlet.collector" Version="1.0.1" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="AutoFixture.Xunit2" Version="4.11.0" />
+        <PackageReference Include="FluentAssertions" Version="5.10.2" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+        <PackageReference Include="xunit" Version="2.4.0" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
+        <PackageReference Include="coverlet.collector" Version="1.0.1" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Decor.Extensions.Microsoft.DependencyInjection\Decor.Extensions.Microsoft.DependencyInjection.csproj" />
-    <ProjectReference Include="..\Decor\Decor.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Decor.Extensions.Microsoft.DependencyInjection\Decor.Extensions.Microsoft.DependencyInjection.csproj" />
+        <ProjectReference Include="..\Decor\Decor.csproj" />
+    </ItemGroup>
+
+    <PropertyGroup>
+        <NoWarn>CA1034, CA1031</NoWarn>
+    </PropertyGroup>
 
 </Project>

@@ -1,16 +1,20 @@
-﻿using Decor.Extensions.Microsoft.DependencyInjection.Internal;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 
 namespace Decor
 {
+    /// <summary>
+    /// Provides extension methods for registering <see cref="Decorator"/> and decorated types.
+    /// </summary>
     public static class ServiceCollectionExtensions
     {
+        /// <summary>
+        /// Sets up a singleton <see cref="Decorator"/> provider to generate <see cref="IDecorator"/> instances.
+        /// </summary>
         public static IServiceCollection AddDecor(this IServiceCollection services)
         {
-            services.TryAddSingleton(x =>
-                new Decorator(ActivatorUtilities.CreateInstance<DependencyInjectionDecoratorProvider>(x)));
+            services.TryAddSingleton(x => new Decorator((type) => (IDecorator)x.GetRequiredService(type)));
 
             return services;
         }
@@ -20,7 +24,7 @@ namespace Decor
             => services.AddScoped(CreateDecorated<TImplementation>);
 
         public static IServiceCollection AddScopedDecorated<TInterface, TImplementation>(
-            this IServiceCollection services) where TImplementation : TInterface where TInterface : class 
+            this IServiceCollection services) where TImplementation : TInterface where TInterface : class
             => services.AddScoped(CreateDecorated<TInterface, TImplementation>);
 
         public static IServiceCollection AddSingletonDecorated<TImplementation>(
