@@ -15,6 +15,7 @@
         <Description>Decor integration with Microsoft's dependency injection.</Description>
         <PackageIcon>icon.png</PackageIcon>
         <PackageIconUrl />
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>
