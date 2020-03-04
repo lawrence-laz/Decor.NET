@@ -4,56 +4,31 @@
 ### What is it?
 This package provides a nice and simple way to execute any code *before* and *after* any other method. This is particularly useful for things like: logging, profiling, retry logic, caching, etc.
 
-Basically instead of this:
 ```csharp
-public class Service : IService
+[Decorate(typeof(LoggingDecorator))]
+void DoWork() 
 {
-    ILogger Logger { get; set; }
-    
-    public void DoWork()
+    Console.WriteLine("Working...");
+}
+```
+
+```csharp
+public class LoggingDecorator : IDecorator
+{    
+    public async Task OnInvoke(Call call)
     {
-        Logger.Log("Started method DoWork");
-        
-        // Doing some work here
-        
-        Logger.Log("Completed method DoWork");
-    }
-    
-    public void DoOtherWork()
-    {
-        Logger.Log("Started method DoOtherWork");
-        
-        // Doing some other work here
-        
-        Logger.Log("Completed method DoOtherWork");
+        Console.WriteLine("Will do some work!");
+        await call.Next();
+        Console.WriteLine("Work is finished!");
     }
 }
 ```
-You can do this:
-```csharp
-public class Service : IService
-{
-    [Decorate(typeof(CallLogger))]
-    void DoWork() => // Doing some work here
-    
-    [Decorate(typeof(CallLogger))]
-    void DoOtherWork() => // Doing some work here
-}
 
-// This can be re-used for any class/method !
-public class CallLogger : IDecorator
-{
-    ILogger Logger { get; set; }
-    
-    public async Task OnInvoke(Call call)
-    {
-        Logger.Log("Started method " + call.Method.Name);
-        
-        await call.Next();
-        
-        Logger.Log("Completed method " + call.Method.Name);
-    }
-}
+```
+Output is:
+    Will do some work!
+    Working...
+    Work is finished!
 ```
 
 ### How to get started?
