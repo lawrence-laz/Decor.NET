@@ -72,6 +72,39 @@ namespace Decor.UnitTests
             decorator.CallCountAfter.Should().Be(1);
         }
 
+
+        [Fact]
+        public async Task AsyncMethod_WithoutAwaits_ShouldCallDecoratorOnce()
+        {
+            // Arrange
+            var services = GetServices();
+            var decorator = services.GetService<TestDecorator>();
+            var sut = services.GetService<SomeClass>();
+
+            // Act
+            await sut.AsyncMethod(shouldAwait: false);
+
+            // Assert
+            decorator.CallCountBefore.Should().Be(1);
+            decorator.CallCountAfter.Should().Be(1);
+        }
+
+        [Fact]
+        public async Task AsyncMethodWithResult_WithoutAwaits_ShouldCallDecoratorOnce()
+        {
+            // Arrange
+            var services = GetServices();
+            var decorator = services.GetService<TestDecorator>();
+            var sut = services.GetService<SomeClass>();
+
+            // Act
+            await sut.AsyncMethodWithResult(shouldAwait: false);
+
+            // Assert
+            decorator.CallCountBefore.Should().Be(1);
+            decorator.CallCountAfter.Should().Be(1);
+        }
+
         #region Setup
         public class TestDecorator : IDecorator
         {
@@ -96,6 +129,18 @@ namespace Decor.UnitTests
             virtual public async Task<object> AsyncMethodWithResult() { await Task.Delay(100); return null; }
             [Decorate(typeof(TestDecorator))]
             virtual public T GenericMethod<T>() => default;
+            [Decorate(typeof(TestDecorator))]
+            virtual public async Task AsyncMethod(bool shouldAwait)
+            {
+                if (shouldAwait) await Task.Delay(100);
+            }
+            [Decorate(typeof(TestDecorator))]
+            virtual public async Task<object> AsyncMethodWithResult(bool shouldAwait)
+            {
+                if (shouldAwait) await Task.Delay(100);
+
+                return new object();
+            }
         }
 
         private IServiceProvider GetServices()

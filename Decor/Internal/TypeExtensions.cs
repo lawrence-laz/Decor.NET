@@ -8,6 +8,8 @@ namespace Decor.Internal
 {
     internal static class TypeExtensions
     {
+        private static readonly Type _voidTaskResultType = Type.GetType("System.Threading.Tasks.VoidTaskResult", false);
+
         internal static IEnumerable<MethodInfo> GetDecoratableMethods(this Type type)
             => type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
                 .Where(x => !x.IsSpecialName);
@@ -29,6 +31,10 @@ namespace Decor.Internal
             return null;
         }
 
-        internal static bool IsAsync(this MethodInfo method) => method.GetCustomAttribute(typeof(AsyncStateMachineAttribute)) != null;
+        internal static bool IsAsync(this MethodInfo method)
+            => method.GetCustomAttribute(typeof(AsyncStateMachineAttribute)) != null;
+
+        internal static bool IsTaskWithVoidTaskResult(this Type type) 
+            => type.GenericTypeArguments?.Length > 0 && type.GenericTypeArguments[0] == _voidTaskResultType;
     }
 }

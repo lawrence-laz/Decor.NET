@@ -76,10 +76,19 @@ namespace Decor
 
                     if (_invocation.ReturnValue is Task task && MethodImplementation.IsAsync())
                     {
-                        // Async methods are executed within interception.
-                        // Non-async method returned task is treated as a result 
-                        // and is not executed within interception.
-                        await task.ConfigureAwait(false);
+                        if (!task.IsCompleted)
+                        {
+                            // Async methods are executed within interception.
+                            // Non-async method returned task is treated as a result 
+                            // and is not executed within interception.
+                            await task.ConfigureAwait(false);
+                        }
+
+                        var taskType = task.GetType();
+                        if (taskType.IsTaskWithVoidTaskResult())
+                        {
+                            return;
+                        }
 
                         var resultProperty = task.GetType().GetProperty("Result");
                         if (resultProperty != null)
