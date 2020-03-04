@@ -2,53 +2,90 @@
 [![NuGet Version](https://img.shields.io/nuget/v/Decor.svg)](https://www.nuget.org/packages/Decor "NuGet Version")
 
 ### What is it?
-Sometimes there is a need to write code that should affect a big part of a code base, like logging, performance tracking, etc. But adding this unrelated code to each method is messy. Instead of that, code can be written in one place and attached dynamically where needed.
+This package provides a nice and simple way to execute any code *before* and *after* any other method. This is particularly useful for things like: logging, profiling, retry logic, caching, etc.
 
-Decor makes it easy to add additional behaviour to existing methods using the C# attributes and without modifying the target method's body.
+Basically instead of this:
+```csharp
+public class Service : IService
+{
+    ILogger Logger { get; set; }
+    
+    public void DoWork()
+    {
+        Logger.Log("Started method DoWork");
+        
+        // Doing some work here
+        
+        Logger.Log("Completed method DoWork");
+    }
+    
+    public void DoOtherWork()
+    {
+        Logger.Log("Started method DoOtherWork");
+        
+        // Doing some other work here
+        
+        Logger.Log("Completed method DoOtherWork");
+    }
+}
+```
+You can do this:
+```csharp
+public class Service : IService
+{
+    [Decorate(typeof(CallLogger))]
+    void DoWork() => // Doing some work here
+    
+    [Decorate(typeof(CallLogger))]
+    void DoOtherWork() => // Doing some work here
+}
+
+// This can be re-used for any class/method !
+public class CallLogger : IDecorator
+{
+    ILogger Logger { get; set; }
+    
+    public async Task OnInvoke(Call call)
+    {
+        Logger.Log("Started method " + call.Method.Name);
+        
+        await call.Next();
+        
+        Logger.Log("Completed method " + call.Method.Name);
+    }
+}
+```
 
 ### How to get started?
-Create a decorator implementing `IDecorator` or `IDecoratorAsync` interfaces. For example a profiler decorator would look like this:
-```csharp
-public class ProfilerDecorator : IDecorator // Asynchronous alternative is IDecoratorAsync.
-{
-    public ILogger Logger { get; }
-    
-    public ProfilerDecorator(ILogger logger)
-    {
-        // Dependency injection provided by NuGet package Decor.Extensions.Microsoft.DependencyInjection.
-        Logger = logger;
-    }
+There are two ways to use this library:
+1. [With Microsoft.DependencyInjection](#with-microsoft-dependency-injection)
+2. [Without dependency injection](#without-dependency-injection)
 
-    public void OnBefore(CallInfo callInfo)
-    {
-        // State is any object to be transfered between OnBefore and OnAfter.
-        callInfo.SetState(Stopwatch.StartNew());
-    }
-
-    public void OnAfter(CallInfo callInfo)
-    {
-        var methodName = callInfo.Method.Name;
-        var elapsedTime = callInfo.GetState<Stopwatch>().ElapsedMilliseconds;
-        Logger.Log($"Method {methodName} took {elapsedTime} ms to execute.");
-    }
-}
+#### With Microsoft dependency injection
+1. Install the main package and Microsoft DependencyInjection integration:
 ```
-Apply a decorator to appropriate methods using the attribute `[Decorate(typeof(...))]`.
-```csharp
-public class SomeClass
-{
-    [Decorate(typeof(ProfilerDecorator))]
-    public virtual void SomeMethod() 
-    {
-        // The code inside the decorated method is left unchanged. 
-    }
-}
+Install-Package Decor
+Install-Package Decor.Extensions.Microsoft.DependencyInjection
 ```
-Add Decor, the created decorator and the decorated class to dependency container.
+2. Create a decorator implementing `IDecorator` interface.
+3. Add `[Decorate(typeof(YourDecorator))]` attributes to methods to be decorated.
+4. Register to dependency container:
 ```csharp
 services.AddDecor()
-    .AddTransient<ProfilerDecorator>()
-    .AddTransientDecorated<SomeClass>(); 
+    .AddTransient<YourDecorator>()
+    .AddTransientDecorated<SomeService>(); 
     // Notice the '...Decorated' postfix. It is needed for `[Decorate]` attribute to take effect.
 ```
-And that's it! Each time the method with an attribute is invoked—the respective decorator will be invoked as well.
+
+#### Without dependency injection
+1. Install the main package:
+```
+Install-Package Decor
+```
+2. Create a decorator implementing `IDecorator` interface.
+3. Add `[Decorate(typeof(YourDecorator))]` attributes to methods to be decorated.
+4. Create decorated objects using `Decorator` class:
+```csharp
+var service = new SomeService();
+var decoratedService = new Decorator().For(service);
+```
