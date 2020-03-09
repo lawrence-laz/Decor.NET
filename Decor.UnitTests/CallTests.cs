@@ -99,8 +99,8 @@ namespace Decor.UnitTests
             => new ServiceCollection()
                 .AddDecor()
                 .AddSingleton<TestDecorator>()
-                .AddTransientDecorated<ISomeInterface, SomeClass>()
-                .AddTransientDecorated<SomeClass>()
+                .AddTransient<ISomeInterface, SomeClass>().Decorated()
+                .AddTransient<SomeClass>().Decorated()
                 .BuildServiceProvider();
         #endregion
     }

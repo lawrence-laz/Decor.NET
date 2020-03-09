@@ -48,20 +48,8 @@ namespace Decor
         /// <typeparam name="TImplementation">Class for a decorated object to decorate.</typeparam>
         /// <param name="targetObject">Object to be decorated.</param>
         /// <returns>A dynamic proxy with <see cref="IDecorator"/> instances as interceptors.</returns>
-        public TInterface For<TInterface, TImplementation>(TImplementation targetObject) where TImplementation : TInterface
-        {
-            if (targetObject == null)
-            {
-                throw new ArgumentNullException(nameof(targetObject));
-            }
-
-            var interceptor = BuildDecoratorInterceptor(targetObject);
-
-            var proxy = _proxyGenerator.CreateInterfaceProxyWithTargetInterface(
-                typeof(TInterface), targetObject, interceptor);
-
-            return (TInterface)proxy;
-        }
+        public TInterface For<TInterface, TImplementation>(TImplementation targetObject) where TImplementation : TInterface 
+            => (TInterface)For(typeof(TInterface), targetObject);
 
         /// <summary>
         /// Creates a decorated instance for the given object.
@@ -70,6 +58,15 @@ namespace Decor
         /// <param name="targetObject">Object to be decorated.</param>
         /// <returns>A dynamic proxy with <see cref="IDecorator"/> instances as interceptors.</returns>
         public TImplementation For<TImplementation>(TImplementation targetObject)
+            => (TImplementation)For(typeof(TImplementation), targetObject);
+
+        /// <summary>
+        /// Creates a decorated instance for the given object.
+        /// </summary>
+        /// <param name="type">Type of the target object.</param>
+        /// <param name="targetObject">Object to be decorated.</param>
+        /// <returns>A dynamic proxy with <see cref="IDecorator"/> instances as interceptors.</returns>
+        public object For(Type type, object targetObject)
         {
             if (targetObject == null)
             {
@@ -78,10 +75,11 @@ namespace Decor
 
             var interceptor = BuildDecoratorInterceptor(targetObject);
 
-            var proxy = _proxyGenerator.CreateClassProxyWithTarget(
-                typeof(TImplementation), targetObject, interceptor);
+            var proxy = type.IsInterface
+                ? _proxyGenerator.CreateInterfaceProxyWithTargetInterface(type, targetObject, interceptor)
+                :_proxyGenerator.CreateClassProxyWithTarget(type, targetObject, interceptor);
 
-            return (TImplementation)proxy;
+            return proxy;
         }
 
         private DecoratorInterceptor BuildDecoratorInterceptor<TImplementation>(TImplementation targetObject)
@@ -107,8 +105,5 @@ namespace Decor
                 return decoratorInstance;
             }
         }
-
-
     }
 }
-
