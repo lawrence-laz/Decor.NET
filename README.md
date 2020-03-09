@@ -47,9 +47,8 @@ Install-Package Decor.Extensions.Microsoft.DependencyInjection
 4. Register to dependency container:
 ```csharp
 services.AddDecor()
-    .AddTransient<YourDecorator>()
-    .AddTransientDecorated<SomeService>(); 
-    // Notice the '...Decorated' postfix. It is needed for `[Decorate]` attribute to take effect.
+    .AddTransient<YourDecorator>() // Transient means decorator will inherit target's lifetime.
+    .AddScoped<SomeService>().Decorated(); 
 ```
 
 #### Without dependency injection
