@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace Decor.Internal
 {
@@ -34,7 +35,31 @@ namespace Decor.Internal
         internal static bool IsAsync(this MethodInfo method)
             => method.GetCustomAttribute(typeof(AsyncStateMachineAttribute)) != null;
 
-        internal static bool IsTaskWithVoidTaskResult(this Type type) 
+        internal static bool IsTaskWithVoidTaskResult(this Type type)
             => type.GenericTypeArguments?.Length > 0 && type.GenericTypeArguments[0] == _voidTaskResultType;
+
+        internal static bool TryGetGenericTaskType(this TypeInfo type, out TypeInfo genericTaskType)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            while (type != null)
+            {
+                if (IsGenericTaskType(type))
+                {
+                    genericTaskType = type;
+                    return true;
+                }
+
+                type = type.BaseType.GetTypeInfo();
+            }
+
+            genericTaskType = null;
+            return false;
+
+            bool IsGenericTaskType(TypeInfo typeInfo) => typeInfo.IsGenericType && typeInfo.GetGenericTypeDefinition() == typeof(Task<>);
+        }
     }
 }

@@ -140,7 +140,7 @@ namespace Decor.UnitTests
         }
 
         [Fact]
-        public void AsyncMethod_NotAwaited_ShouldCallDecorator()
+        public void AsyncMethod_NoAwait_ShouldCallDecorator()
         {
             // Arrange
             var services = GetServices();

@@ -84,15 +84,22 @@ namespace Decor
                             await task.ConfigureAwait(false);
                         }
 
-                        var taskType = task.GetType();
-                        if (taskType.IsTaskWithVoidTaskResult())
-                        {
-                            return;
-                        }
 
-                        var resultProperty = task.GetType().GetProperty("Result");
-                        if (resultProperty != null)
+                        // Runtime might return Task<T> derived type here.
+                        // Discussed in dotnet/runtime#26312 and microsoft/vs-streamjsonrpc#116.
+                        if (task.GetType().GetTypeInfo().TryGetGenericTaskType(out var genericTaskType))
                         {
+                            if (genericTaskType.IsTaskWithVoidTaskResult())
+                            {
+                                return;
+                            }
+
+                            var resultProperty = genericTaskType.GetDeclaredProperty("Result");
+                            if (resultProperty == null)
+                            {
+                                throw new Exception($"Object of type '{genericTaskType}' was expected to contain a property 'Result'.");
+                            }
+
                             ReturnValue = resultProperty.GetValue(task);
                         }
                     }
