@@ -1,5 +1,6 @@
 # Decor.NET
 [![NuGet Version](https://img.shields.io/nuget/v/Decor.svg)](https://www.nuget.org/packages/Decor "NuGet Version")
+[![Build Status](https://travis-ci.org/lawrence-laz/Decor.NET.svg?branch=master)](https://travis-ci.org/lawrence-laz/Decor.NET)
 
 ### What is it?
 This package provides a nice and simple way to execute any code *before* and *after* any other method. This is particularly useful for things like: logging, profiling, retry logic, caching, etc.
