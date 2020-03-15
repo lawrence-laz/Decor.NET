@@ -1,10 +1,2 @@
 language: csharp
-mono: none
 solution: ./Decor.sln
-install:
-  - curl -L -o nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
-  - mono nuget.exe restore Decor.sln
-  - mono nuget.exe install xunit.runners -Version 1.9.2 -OutputDirectory testrunner
-script:
-  - msbuild /p:Configuration=Release Decor.sln
-  - mono ./testrunner/xunit.runners.*/tools/xunit.console.clr4.exe ./Decor.UnitTests/bin/Release/Decor.UnitTests.dll
