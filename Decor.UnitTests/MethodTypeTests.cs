@@ -140,7 +140,7 @@ namespace Decor.UnitTests
         }
 
         [Fact]
-        public void AsyncMethod_NoAwait_ShouldCallDecorator()
+        public async Task AsyncMethod_WithDelayedAwait_ShouldCallDecorator()
         {
             // Arrange
             var services = GetServices();
@@ -148,7 +148,14 @@ namespace Decor.UnitTests
             var sut = services.GetService<ISomeInterface>();
 
             // Act
-            sut.AsyncMethod(shouldAwait: true).Wait();
+            var task = sut.AsyncMethod(shouldAwait: true);
+
+            // Assert
+            decorator.CallCountBefore.Should().Be(1);
+            decorator.CallCountAfter.Should().Be(0);
+
+            // Continue Act
+            await task;
 
             // Assert
             decorator.CallCountBefore.Should().Be(1);
