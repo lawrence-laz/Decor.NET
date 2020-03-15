@@ -8,7 +8,8 @@ namespace Decor.UnitTests
 {
     public class CallOrderTests
     {
-        [Fact]
+        // These tests will be useful if 'Order' property is added to DecorateAttribute.
+        [Fact(Skip = "Attribute order is not guaranteed by the framework.")]
         public void Method_WithAscendingDecorators_ShouldCallInAscendingOrder()
         {
             // Arrange
@@ -24,7 +25,7 @@ namespace Decor.UnitTests
             decorator1.CallTime.Should().BeBefore(decorator2.CallTime);
         }
 
-        [Fact]
+        [Fact(Skip = "Attribute order is not guaranteed by the framework.")]
         public void Method_WithDescendingDecorators_ShouldCallInDescendingOrder()
         {
             // Arrange
@@ -79,7 +80,7 @@ namespace Decor.UnitTests
                 .AddDecor()
                 .AddSingleton<Decorator1>()
                 .AddSingleton<Decorator2>()
-                .AddTransientDecorated<SomeClass>()
+                .AddTransient<SomeClass>().Decorated()
                 .BuildServiceProvider();
         #endregion
     }
