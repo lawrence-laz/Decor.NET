@@ -1,5 +1,4 @@
-﻿using Decor.UnitTests.Utils;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
@@ -21,7 +20,7 @@ namespace Decor.UnitTests
             someClass.Method();
 
             // Assert
-            someClass.UnwrapProxy().CallCount.Should().Be(2);
+            someClass.UnwrapDecorated().CallCount.Should().Be(2);
             followingDecorator.CallCount.Should().Be(2);
         }
 
@@ -76,7 +75,7 @@ namespace Decor.UnitTests
                 .AddDecor()
                 .AddSingleton<TestDecorator>()
                 .AddSingleton<CountingDecorator>()
-                .AddTransientDecorated<SomeClass>()
+                .AddTransient<SomeClass>().Decorated()
                 .BuildServiceProvider();
         #endregion
     }

@@ -1,5 +1,4 @@
 ﻿using AutoFixture.Xunit2;
-using Decor.UnitTests.Utils;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -30,7 +29,7 @@ namespace Decor.UnitTests
             decorator.Call.MethodImplementation.GetGenericMethodDefinition()
                 .Should().BeSameAs(typeof(SomeClass).GetMethod(nameof(SomeClass.GenericMethod)));
             
-            decorator.Call.Object.Should().Be(someClass.UnwrapProxy());
+            decorator.Call.Object.Should().Be(someClass.UnwrapDecorated());
             
             decorator.Call.ReturnValue.Should().Be(expectedReturnValue);
             
