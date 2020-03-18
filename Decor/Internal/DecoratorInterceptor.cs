@@ -31,6 +31,8 @@ namespace Decor.Internal
             var call = new Call(invocation, decorators);
 
             decorators[0].OnInvoke(call).Wait();
+
+            invocation.ReturnValue = call.ReturnValue;
         }
 
         public void InterceptAsynchronous(IInvocation invocation)
@@ -85,7 +87,7 @@ namespace Decor.Internal
 
             await decorators[0].OnInvoke(call).ConfigureAwait(false);
 
-            return (TResult)invocation.ReturnValue;
+            return (TResult)call.ReturnValue;
         }
     }
 }

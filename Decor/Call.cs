@@ -29,11 +29,7 @@ namespace Decor
         /// <summary>
         /// Gets or sets the return value provided by call target or other <see cref="IDecorator"/> instances.
         /// </summary>
-        public object ReturnValue
-        {
-            get => _invocation.ReturnValue;
-            set => _invocation.ReturnValue = value;
-        }
+        public object ReturnValue { get; set; }
 
         /// <summary>
         /// Gets the generic arguments of the method. 
@@ -84,7 +80,6 @@ namespace Decor
                             await task.ConfigureAwait(false);
                         }
 
-
                         // Runtime might return Task<T> derived type here.
                         // Discussed in dotnet/runtime#26312 and microsoft/vs-streamjsonrpc#116.
                         if (task.GetType().GetTypeInfo().TryGetGenericTaskType(out var genericTaskType))
@@ -102,6 +97,10 @@ namespace Decor
 
                             ReturnValue = resultProperty.GetValue(task);
                         }
+                    }
+                    else
+                    {
+                        ReturnValue = _invocation.ReturnValue;
                     }
                 }
             }
