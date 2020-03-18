@@ -19,9 +19,9 @@ namespace Decor.UnitTests
         }
 
         /// <summary>
-        /// .Net Framework 4.6.1 seems to be a bit slower and needs ~400ms, while .Net Core fits in ~200 ms.
+        /// .Net Framework 4.6.1 seems to be a bit slower and needs ~600ms, while .Net Core fits in ~200 ms.
         /// </summary>
-        [Fact(DisplayName = "<400 ms on first call.")]
+        [Fact(DisplayName = "<600 ms on first call.")]
         public void Method_CalledFirstTime_ShouldTakeLessThan300Ms()
         {
             // Arrange
@@ -35,7 +35,7 @@ namespace Decor.UnitTests
             // Assert
             var actualTime = stopwatch.ElapsedMilliseconds;
             Output.WriteLine($"Initial call took '{actualTime}' ms.");
-            actualTime.Should().BeLessThan(400);
+            actualTime.Should().BeLessThan(600);
         }
 
         [Fact(DisplayName = "<=1 ms after first call.")]
