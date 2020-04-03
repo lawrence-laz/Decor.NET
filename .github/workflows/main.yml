@@ -30,6 +30,7 @@ jobs:
         cd ./Decor.UnitTests/
         dotnet build --framework netcoreapp30
         dotnet test --no-build --framework netcoreapp30 /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=opencover
+        cd ./TestResults/
 
     - name: Publish coverage report to Codacity
       uses: mrfyda/codacy-coverage-reporter-action@master
