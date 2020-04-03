@@ -1,6 +1,6 @@
 # Decor.NET
 [![NuGet Version](https://img.shields.io/nuget/v/Decor.svg)](https://www.nuget.org/packages/Decor "NuGet Version")
-[![GitHub Action Status](https://github.com/lawrence-laz/Decor.NET/workflows/continuous%20integration/badge.svg)
+[![GitHub Action Status](https://github.com/lawrence-laz/Decor.NET/workflows/continuous%20integration/badge.svg)](https://github.com/lawrence-laz/Decor.NET/actions?query=workflow%3A%22continuous+integration%22)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/16ff5fdad18d41879814228d78e754d1)](https://www.codacy.com/manual/lawrence-laz/Decor.NET?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=lawrence-laz/Decor.NET&amp;utm_campaign=Badge_Grade)
 [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/16ff5fdad18d41879814228d78e754d1)](https://www.codacy.com/manual/lawrence-laz/Decor.NET?utm_source=github.com&utm_medium=referral&utm_content=lawrence-laz/Decor.NET&utm_campaign=Badge_Coverage)
 ## What is it?
