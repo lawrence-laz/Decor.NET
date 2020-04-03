@@ -1,6 +1,8 @@
 ﻿using Castle.DynamicProxy;
+using System;
 using System.Collections.ObjectModel;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 
 namespace Decor.Internal
@@ -30,7 +32,14 @@ namespace Decor.Internal
 
             var call = new Call(invocation, decorators);
 
-            decorators[0].OnInvoke(call).Wait();
+            try
+            {
+                decorators[0].OnInvoke(call).Wait();
+            }
+            catch (AggregateException e) when (e.InnerException != null)
+            {
+                e.InnerException.Rethrow();
+            }
 
             invocation.ReturnValue = call.ReturnValue;
         }
@@ -41,19 +50,26 @@ namespace Decor.Internal
                 ? invocation.MethodInvocationTarget.GetGenericMethodDefinition()
                 : invocation.MethodInvocationTarget;
 
-            if (MethodDecoratorMap.TryGetValue(targetMethod, out var decorators)
+            if (!MethodDecoratorMap.TryGetValue(targetMethod, out var decorators)
                 || decorators == null || decorators.Length == 0)
             {
+                invocation.Proceed();
+
+                return; // Method is not decorated.
+            }
+            else
+            {
                 var decoratedTask = WrapInvocationInTask(invocation, decorators);
+
+                if (decoratedTask.IsFaulted)
+                {
+                    (decoratedTask.Exception?.InnerException ?? decoratedTask.Exception).Rethrow();
+                }
 
                 if (!decoratedTask.IsCompleted)
                 {
                     invocation.ReturnValue = decoratedTask;
                 }
-            }
-            else
-            {
-                invocation.Proceed();
             }
         }
 
@@ -63,14 +79,16 @@ namespace Decor.Internal
                 ? invocation.MethodInvocationTarget.GetGenericMethodDefinition()
                 : invocation.MethodInvocationTarget;
 
-            if (MethodDecoratorMap.TryGetValue(targetMethod, out var decorators)
+            if (!MethodDecoratorMap.TryGetValue(targetMethod, out var decorators)
                 || decorators == null || decorators.Length == 0)
             {
-                invocation.ReturnValue = WrapInvocationInTaskWithResult<TResult>(invocation, decorators);
+                invocation.Proceed();
+
+                return; // Method is not decorated.
             }
             else
             {
-                invocation.Proceed();
+                invocation.ReturnValue = WrapInvocationInTaskWithResult<TResult>(invocation, decorators);
             }
         }
 
