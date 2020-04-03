@@ -128,6 +128,42 @@ namespace Decor.UnitTests
                 .Should().ThrowExactly<ExpectedException>();
         }
 
+        [Fact]
+        public void MethodDecoratedToThrow_WithThrowingDecorator_ShouldCatchSameException()
+        {
+            // Arrange
+            var services = GetServices();
+            var someClass = services.GetService<SomeClass>();
+
+            // Act & Assert
+            someClass.Invoking(x => x.MethodDecoratedToThrow())
+                .Should().ThrowExactly<ExpectedException>();
+        }
+
+        [Fact]
+        public void MethodDecoratedToThrowAsync_WithThrowingDecorator_ShouldCatchSameException()
+        {
+            // Arrange
+            var services = GetServices();
+            var someClass = services.GetService<SomeClass>();
+
+            // Act & Assert
+            someClass.Invoking(async x => await x.MethodDecoratedToThrowAsync())
+                .Should().ThrowExactly<ExpectedException>();
+        }
+
+        [Fact]
+        public void MethodDecoratedToThrowAsyncResult_WithThrowingDecorator_ShouldCatchSameException()
+        {
+            // Arrange
+            var services = GetServices();
+            var someClass = services.GetService<SomeClass>();
+
+            // Act & Assert
+            someClass.Invoking(async x => await x.MethodDecoratedToThrowAsyncResult())
+                .Should().ThrowExactly<ExpectedException>();
+        }
+
         #region Setup
         public class TestDecorator : IDecorator
         {
@@ -135,6 +171,11 @@ namespace Decor.UnitTests
             {
                 await call.Next();
             }
+        }
+
+        public class ThrowingDecorator : IDecorator
+        {
+            public async Task OnInvoke(Call call) => throw new ExpectedException();
         }
 
         public class ExpectedException : Exception { }
@@ -183,12 +224,22 @@ namespace Decor.UnitTests
                 await Task.Yield();
                 throw new ExpectedException();
             }
+
+            [Decorate(typeof(ThrowingDecorator))]
+            public virtual void MethodDecoratedToThrow() { }
+
+            [Decorate(typeof(ThrowingDecorator))]
+            public virtual async Task MethodDecoratedToThrowAsync() => await Task.Yield();
+
+            [Decorate(typeof(ThrowingDecorator))]
+            public virtual async Task<int> MethodDecoratedToThrowAsyncResult() => await Task.FromResult(0);
         }
 
         private IServiceProvider GetServices()
             => new ServiceCollection()
                 .AddDecor()
                 .AddSingleton<TestDecorator>()
+                .AddSingleton<ThrowingDecorator>()
                 .AddTransient<SomeClass>().Decorated()
                 .BuildServiceProvider();
         #endregion
