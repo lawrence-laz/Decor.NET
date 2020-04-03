@@ -39,29 +39,29 @@ There are two ways to use this library:
 2. [Without dependency injection](#without-dependency-injection)
 
 ### With Microsoft dependency injection
- 1. Install the main package and Microsoft DependencyInjection integration:
-```powershell
-PS> Install-Package Decor
-PS> Install-Package Decor.Extensions.Microsoft.DependencyInjection
-```
- 2. Create a decorator implementing `IDecorator` interface.
- 3. Add `[Decorate(typeof(YourDecorator))]` attributes to methods to be decorated.
- 4. Register to dependency container:
-```csharp
-services.AddDecor()
-    .AddTransient<YourDecorator>() // Transient means decorator will inherit target's lifetime.
-    .AddScoped<SomeService>().Decorated(); 
-```
+1. Install the main package and Microsoft DependencyInjection integration:
+    ```powershell
+    PS> Install-Package Decor
+    PS> Install-Package Decor.Extensions.Microsoft.DependencyInjection
+    ```
+2. Create a decorator implementing `IDecorator` interface.
+3. Add `[Decorate(typeof(YourDecorator))]` attributes to methods to be decorated.
+4. Register to dependency container:
+    ```csharp
+    services.AddDecor()
+        .AddTransient<YourDecorator>() // Transient means decorator will inherit target's lifetime.
+        .AddScoped<SomeService>().Decorated(); 
+    ```
 
 ### Without dependency injection
- 1. Install the main package:
-```powershell
-PS> Install-Package Decor
-```
- 2. Create a decorator implementing `IDecorator` interface.
- 3. Add `[Decorate(typeof(YourDecorator))]` attributes to methods to be decorated.
- 4. Create decorated objects using `Decorator` class:
-```csharp
-var service = new SomeService();
-var decoratedService = new Decorator().For(service);
-```
+1. Install the main package:
+    ```powershell
+    PS> Install-Package Decor
+    ```
+2. Create a decorator implementing `IDecorator` interface.
+3. Add `[Decorate(typeof(YourDecorator))]` attributes to methods to be decorated.
+4. Create decorated objects using `Decorator` class:
+    ```csharp
+    var service = new SomeService();
+    var decoratedService = new Decorator().For(service);
+    ```
