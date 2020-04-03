@@ -31,6 +31,7 @@ jobs:
         dotnet build --framework netcoreapp30
         dotnet test --no-build --framework netcoreapp30 /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=opencover
         cd ./TestResults/
+        mv ./coverage.netcoreapp30.opencover.xml ./opencover.xml
 
     - name: Publish coverage report to Codacity
       uses: mrfyda/codacy-coverage-reporter-action@master
