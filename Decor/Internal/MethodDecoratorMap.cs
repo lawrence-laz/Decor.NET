@@ -15,7 +15,7 @@ namespace Decor.Internal
 
         public ReadOnlyDictionary<MethodInfo, Type[]> Get(Type decoratedType) => _map.GetOrAdd(decoratedType, Factory);
 
-        private ReadOnlyDictionary<MethodInfo, Type[]> Factory(Type decoratedType)
+        private static ReadOnlyDictionary<MethodInfo, Type[]> Factory(Type decoratedType)
         {
             var map = new Dictionary<MethodInfo, Type[]>();
 

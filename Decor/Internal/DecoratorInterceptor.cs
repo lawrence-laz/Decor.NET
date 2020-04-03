@@ -2,7 +2,6 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Reflection;
-using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 
 namespace Decor.Internal
@@ -53,9 +52,8 @@ namespace Decor.Internal
             if (!MethodDecoratorMap.TryGetValue(targetMethod, out var decorators)
                 || decorators == null || decorators.Length == 0)
             {
+                // Method is not decorated.
                 invocation.Proceed();
-
-                return; // Method is not decorated.
             }
             else
             {
@@ -82,9 +80,8 @@ namespace Decor.Internal
             if (!MethodDecoratorMap.TryGetValue(targetMethod, out var decorators)
                 || decorators == null || decorators.Length == 0)
             {
+                // Method is not decorated.
                 invocation.Proceed();
-
-                return; // Method is not decorated.
             }
             else
             {
@@ -92,14 +89,14 @@ namespace Decor.Internal
             }
         }
 
-        private async Task WrapInvocationInTask(IInvocation invocation, IDecorator[] decorators)
+        private static async Task WrapInvocationInTask(IInvocation invocation, IDecorator[] decorators)
         {
             var call = new Call(invocation, decorators);
 
             await decorators[0].OnInvoke(call).ConfigureAwait(false);
         }
 
-        private async Task<TResult> WrapInvocationInTaskWithResult<TResult>(IInvocation invocation, IDecorator[] decorators)
+        private static async Task<TResult> WrapInvocationInTaskWithResult<TResult>(IInvocation invocation, IDecorator[] decorators)
         {
             var call = new Call(invocation, decorators);
 

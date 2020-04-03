@@ -86,7 +86,6 @@ namespace Decor
         {
             var decoratorTypesMap = _methodDecoratorMap.Get(targetObject.GetType());
             var decoratorInstances = new Dictionary<Type, IDecorator>();
-            var methodDecoratorsMap = new Dictionary<MethodInfo, IDecorator[]>();
 
             var decoratorsMap = decoratorTypesMap.ToDictionary(
                 typeMapItem => typeMapItem.Key,

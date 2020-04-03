@@ -92,7 +92,8 @@ namespace Decor
                             var resultProperty = genericTaskType.GetDeclaredProperty("Result");
                             if (resultProperty == null)
                             {
-                                throw new Exception($"Object of type '{genericTaskType}' was expected to contain a property 'Result'.");
+                                throw new InvalidOperationException(
+                                    $"Object of type '{genericTaskType}' was expected to contain a property 'Result'.");
                             }
 
                             ReturnValue = resultProperty.GetValue(task);
