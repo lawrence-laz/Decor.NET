@@ -26,7 +26,7 @@
         <ProjectReference Include="..\Decor.Extensions.Microsoft.DependencyInjection\Decor.Extensions.Microsoft.DependencyInjection.csproj" />
         <ProjectReference Include="..\Decor\Decor.csproj" />
     </ItemGroup>
-
+    
     <PropertyGroup>
         <NoWarn>CA1034, CA1031</NoWarn>
     </PropertyGroup>

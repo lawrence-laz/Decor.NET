@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Decor.Extensions.Microsoft.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Decor.UnitTests", "Decor.UnitTests\Decor.UnitTests.csproj", "{A0C58CA1-B37A-462B-83E7-76E8652CACFD}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeneratedDemo", "GeneratedDemo\GeneratedDemo.csproj", "{370D5E5B-1261-4A3C-84AC-D787EE874E67}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceGeneratorSamples", "SourceGeneratorSamples\SourceGeneratorSamples.csproj", "{0C1A0CA1-B3AC-40E8-A270-4124F2BC1014}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{A0C58CA1-B37A-462B-83E7-76E8652CACFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0C58CA1-B37A-462B-83E7-76E8652CACFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0C58CA1-B37A-462B-83E7-76E8652CACFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{370D5E5B-1261-4A3C-84AC-D787EE874E67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{370D5E5B-1261-4A3C-84AC-D787EE874E67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{370D5E5B-1261-4A3C-84AC-D787EE874E67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{370D5E5B-1261-4A3C-84AC-D787EE874E67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C1A0CA1-B3AC-40E8-A270-4124F2BC1014}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C1A0CA1-B3AC-40E8-A270-4124F2BC1014}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C1A0CA1-B3AC-40E8-A270-4124F2BC1014}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C1A0CA1-B3AC-40E8-A270-4124F2BC1014}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
