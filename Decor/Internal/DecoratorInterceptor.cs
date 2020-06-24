@@ -93,7 +93,26 @@ namespace Decor.Internal
         {
             var call = new Call(invocation, decorators);
 
-            await decorators[0].OnInvoke(call).ConfigureAwait(false);
+            try
+            {
+                await decorators[0].OnInvoke(call).ConfigureAwait(false);
+            }
+            catch (AggregateException aggreggateException)
+            {
+                aggreggateException.InnerException?.Rethrow();
+                aggreggateException.Rethrow();
+            }
+            catch (TargetInvocationException targetInvocationException)
+            {
+                if (targetInvocationException.InnerException is AggregateException aggreggateException)
+                {
+                    aggreggateException.InnerException?.Rethrow();
+                    aggreggateException.Rethrow();
+                }
+
+                targetInvocationException.InnerException?.Rethrow();
+                targetInvocationException.Rethrow();
+            }
 
             return (TResult)call.ReturnValue;
         }
