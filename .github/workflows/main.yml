@@ -34,6 +34,6 @@ jobs:
         mv ./coverage.netcoreapp30.opencover.xml ./opencover.xml
 
     - name: Publish coverage report to Codacity
-      uses: mrfyda/codacy-coverage-reporter-action@master
+      uses: codacy/codacy-coverage-reporter-action@master
       with:
         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
