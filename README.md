@@ -4,7 +4,13 @@
 [![GitHub Action Status](https://github.com/lawrence-laz/Decor.NET/workflows/continuous%20integration/badge.svg)](https://github.com/lawrence-laz/Decor.NET/actions?query=workflow%3A%22continuous+integration%22)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/16ff5fdad18d41879814228d78e754d1)](https://www.codacy.com/manual/lawrence-laz/Decor.NET?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=lawrence-laz/Decor.NET&amp;utm_campaign=Badge_Grade)
 [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/16ff5fdad18d41879814228d78e754d1)](https://www.codacy.com/manual/lawrence-laz/Decor.NET?utm_source=github.com&utm_medium=referral&utm_content=lawrence-laz/Decor.NET&utm_campaign=Badge_Coverage)
-## What is it?
+
+## 🚧 Notes on version 3.0 🚧
+With the introduction of [source generators](https://devblogs.microsoft.com/dotnet/introducing-c-source-generators/) in C#, Decor will undergo major changes with significant improvements. Big part of dynamic code will be transformed into compile time source generators. 
+### What does this mean for you?
+If you are currently using Decor V2, you can continue using it with no problems. Once V3 is available you will have to make a decision to either stay with V2, or update your code to V3. No new features will be added to V2, but in case of significant bugs they will be addressed. All further development of Decor will be performed on V3.
+
+## What does this package do?
 This package provides a nice and simple way to execute any code *before* and *after* any other method. This is particularly useful for things like: logging, profiling, retry logic, caching, etc.
 
 ```csharp
