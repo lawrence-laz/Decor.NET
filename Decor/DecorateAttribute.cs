@@ -7,7 +7,7 @@ namespace Decor
     /// <para>Can be used in both interface and class methods within a hierarchy.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
-    public sealed class DecorateAttribute : Attribute
+    public class DecorateAttribute : Attribute
     {
         /// <summary>
         /// Gets the <see cref="Type"/> represting the registered decorator.
