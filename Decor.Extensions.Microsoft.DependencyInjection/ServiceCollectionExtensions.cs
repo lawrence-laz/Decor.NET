@@ -123,6 +123,32 @@ namespace Decor
             return services;
         }
 
+        /// <summary>
+        /// Decorates the specified service type descriptor inside <see cref="IServiceCollection"/>.
+        /// </summary>
+        /// <typeparam name="T">Service type to be decorated</typeparam>
+        public static IServiceCollection Decorate<T>(this IServiceCollection services) where T : class
+        {
+            services.AddDecor();
+
+            var descriptors = services.Where(x => x.ServiceType == typeof(T)).ToArray();
+
+            if (!descriptors.Any())
+            {
+                throw new ArgumentException($"Cannot find the service of type '{typeof(T)}' to decorate. " +
+                    $"Add '{typeof(T)}' to service collection before trying to decorate it.");
+            }
+
+            foreach (var descriptor in descriptors)
+            {
+                var index = services.IndexOf(descriptor);
+                services.Insert(index, Decorate(descriptor));
+                services.RemoveAt(index + 1);
+            }
+
+            return services;
+        }
+
         private static ServiceDescriptor Decorate(ServiceDescriptor serviceDescriptor)
         {
             object DecoratedFactory(IServiceProvider serviceProvider)
