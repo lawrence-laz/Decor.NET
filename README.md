@@ -48,19 +48,19 @@ There are two ways to use this library:
 ### With Microsoft dependency injection
 1.  Install the main package and Microsoft DependencyInjection integration:
     ```powershell
-    PS> Install-Package Decor
     PS> Install-Package Decor.Extensions.Microsoft.DependencyInjection
     ```
 
-2.  Create a decorator implementing `IDecorator` interface.
+2.  Create a decorator `YourDecorator` implementing `IDecorator` interface.
 
-3.  Add `[Decorate(typeof(YourDecorator))]` attributes to methods to be decorated.
+3.  Add `[Decorate(typeof(YourDecorator))]` attributes to `SomeService` class' methods to be decorated.
 
 4.  Register to dependency container:
     ```csharp
-    services.AddDecor()
+    services
+        .AddScoped<SomeService>()
         .AddTransient<YourDecorator>() // Transient means decorator will inherit target's lifetime.
-        .AddScoped<SomeService>().Decorated(); 
+        .Decorate<SomeService>(); 
     ```
 
 ### Without dependency injection
