@@ -18,8 +18,10 @@ jobs:
         dotnet-version: '3.1.x'
     - name: Install dependencies
       run: dotnet restore
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
+    - name: Build Decor
+      run: dotnet build ./Decor/Decor.csproj --configuration Release --no-restore
+    - name: Build Decor.Extensions.Microsoft.DependencyInjection
+      run: dotnet build ./Decor.Extensions.Microsoft.DependencyInjection/Decor.Extensions.Microsoft.DependencyInjection.csproj --configuration Release --no-restore
     - name: Test and generate coverage report
       run: |
         cd ./Decor.UnitTests/
