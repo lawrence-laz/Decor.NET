@@ -29,7 +29,7 @@ namespace Decor.UnitTests
 
             // Act & Assert
             someClass.Invoking(async x => await x.MethodAsyncThrowImmediately())
-                .Should().ThrowExactly<ExpectedException>();
+                .Should().ThrowExactlyAsync<ExpectedException>();
         }
 
         [Fact]
@@ -41,7 +41,7 @@ namespace Decor.UnitTests
 
             // Act & Assert
             someClass.Invoking(async x => await x.MethodAsyncResultThrowImmediately())
-                .Should().ThrowExactly<ExpectedException>();
+                .Should().ThrowExactlyAsync<ExpectedException>();
         }
 
         [Fact]
@@ -53,7 +53,7 @@ namespace Decor.UnitTests
 
             // Act & Assert
             someClass.Invoking(async x => await x.MethodAsyncThrowAfterAwait())
-                .Should().ThrowExactly<ExpectedException>();
+                .Should().ThrowExactlyAsync<ExpectedException>();
         }
 
         [Fact]
@@ -65,7 +65,7 @@ namespace Decor.UnitTests
 
             // Act & Assert
             someClass.Invoking(async x => await x.MethodAsyncResultThrowAfterAwait())
-                .Should().ThrowExactly<ExpectedException>();
+                .Should().ThrowExactlyAsync<ExpectedException>();
         }
 
         [Fact]
@@ -89,7 +89,7 @@ namespace Decor.UnitTests
 
             // Act & Assert
             someClass.Invoking(async x => await x.MethodAsyncThrowAfterAwaitNotDecorated())
-                .Should().ThrowExactly<ExpectedException>();
+                .Should().ThrowExactlyAsync<ExpectedException>();
         }
 
         [Fact]
@@ -101,7 +101,7 @@ namespace Decor.UnitTests
 
             // Act & Assert
             someClass.Invoking(async x => await x.MethodAsyncThrowImmediatelyNotDecorated())
-                .Should().ThrowExactly<ExpectedException>();
+                .Should().ThrowExactlyAsync<ExpectedException>();
         }
 
         [Fact]
@@ -113,7 +113,7 @@ namespace Decor.UnitTests
 
             // Act & Assert
             someClass.Invoking(async x => await x.MethodAsyncResultThrowAfterAwaitNotDecorated())
-                .Should().ThrowExactly<ExpectedException>();
+                .Should().ThrowExactlyAsync<ExpectedException>();
         }
 
         [Fact]
@@ -125,7 +125,7 @@ namespace Decor.UnitTests
 
             // Act & Assert
             someClass.Invoking(async x => await x.MethodAsyncResultThrowImmediatelyNotDecorated())
-                .Should().ThrowExactly<ExpectedException>();
+                .Should().ThrowExactlyAsync<ExpectedException>();
         }
 
         [Fact]
@@ -149,7 +149,7 @@ namespace Decor.UnitTests
 
             // Act & Assert
             someClass.Invoking(async x => await x.MethodDecoratedToThrowAsync())
-                .Should().ThrowExactly<ExpectedException>();
+                .Should().ThrowExactlyAsync<ExpectedException>();
         }
 
         [Fact]
@@ -161,7 +161,7 @@ namespace Decor.UnitTests
 
             // Act & Assert
             someClass.Invoking(async x => await x.MethodDecoratedToThrowAsyncResult())
-                .Should().ThrowExactly<ExpectedException>();
+                .Should().ThrowExactlyAsync<ExpectedException>();
         }
 
         #region Setup
