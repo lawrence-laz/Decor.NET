@@ -82,7 +82,7 @@ namespace Decor
 
                         if (task.IsFaulted && task.Exception != null)
                         {
-                            throw task.Exception;
+                            task.Exception.Rethrow();
                         }
 
                         // Runtime might return Task<T> derived type here.
