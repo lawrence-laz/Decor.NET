@@ -80,6 +80,11 @@ namespace Decor
                             await task.ConfigureAwait(false);
                         }
 
+                        if (task.IsFaulted && task.Exception != null)
+                        {
+                            throw task.Exception;
+                        }
+
                         // Runtime might return Task<T> derived type here.
                         // Discussed in dotnet/runtime#26312 and microsoft/vs-streamjsonrpc#116.
                         if (task.GetType().GetTypeInfo().TryGetGenericTaskType(out var genericTaskType))
