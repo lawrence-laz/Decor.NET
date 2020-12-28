@@ -68,15 +68,54 @@ namespace Decor.UnitTests
             decorator.Call.GenericArguments.Should().BeEmpty();
         }
 
+        [Fact]
+        public async Task MethodAsyncWithException_WithDecorator_ShouldThrowException()
+        {
+            // Arrange
+            var services = GetServices();
+            var decorator = services.GetService<TestDecorator>();
+            var someService = services.GetService<SomeClassThrowingAsyncException>();
+
+            // Act
+            await someService.Invoking(x => x.MethodAsyncWithException()).Should().ThrowAsync<Exception>();
+
+            // Assert
+            decorator.ExceptionThrown.Should().NotBeNull();
+        }
+
+        [Fact]
+        public async Task MethodWithException_WithDecorator_ShouldThrowException()
+        {
+            // Arrange
+            var services = GetServices();
+            var decorator = services.GetService<TestDecorator>();
+            var someService = services.GetService<SomeClassThrowingException>();
+
+            // Act
+            await someService.Invoking(x => x.MethodWithException()).Should().ThrowAsync<Exception>();
+
+            // Assert
+            decorator.ExceptionThrown.Should().NotBeNull();
+        }
+
         #region Setup
         public class TestDecorator : IDecorator
         {
             public Call Call { get; set; }
+            public Exception ExceptionThrown { get; set; }
 
             public async Task OnInvoke(Call call)
             {
                 Call = call;
-                await call.Next();
+                try
+                {
+                    await call.Next();
+                }
+                catch (Exception ex)
+                {
+                    ExceptionThrown = ex;
+                    throw;
+                }
             }
         }
 
@@ -94,11 +133,31 @@ namespace Decor.UnitTests
             virtual public void Method() { }
         }
 
+        public class SomeClassThrowingAsyncException
+        {
+            [Decorate(typeof(TestDecorator))]
+            virtual public async Task MethodAsyncWithException()
+            {
+                throw new Exception();
+            }
+        }
+
+        public class SomeClassThrowingException
+        {
+            [Decorate(typeof(TestDecorator))]
+            virtual public Task MethodWithException()
+            {
+                throw new Exception();
+            }
+        }
+
         private IServiceProvider GetServices()
             => new ServiceCollection()
                 .AddDecor()
                 .AddSingleton<TestDecorator>()
                 .AddTransient<ISomeInterface, SomeClass>().Decorated()
+                .AddTransient<SomeClassThrowingAsyncException>().Decorated()
+                .AddTransient<SomeClassThrowingException>().Decorated()
                 .AddTransient<SomeClass>().Decorated()
                 .BuildServiceProvider();
         #endregion
