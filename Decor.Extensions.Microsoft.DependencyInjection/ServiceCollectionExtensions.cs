@@ -1,8 +1,10 @@
-﻿using Decor.Internal;
+using Decor.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using System.Linq;
+
+// TODO: WHat will happen to this package?
 
 namespace Decor
 {
@@ -20,37 +22,6 @@ namespace Decor
 
             return services;
         }
-
-        [Obsolete("Use '.AddScoped<T>().Decorated()'.")]
-        public static IServiceCollection AddScopedDecorated<TImplementation>(
-            this IServiceCollection services) where TImplementation : class
-            => services.AddScoped(CreateDecorated<TImplementation>);
-
-        [Obsolete("Use '.AddScoped<T1, T2>().Decorated()'.")]
-        public static IServiceCollection AddScopedDecorated<TInterface, TImplementation>(
-            this IServiceCollection services) where TImplementation : TInterface where TInterface : class
-            => services.AddScoped(CreateDecorated<TInterface, TImplementation>);
-
-        [Obsolete("Use '.AddSingleton<T>().Decorated()'.")]
-        public static IServiceCollection AddSingletonDecorated<TImplementation>(
-            this IServiceCollection services) where TImplementation : class
-            => services.AddSingleton(CreateDecorated<TImplementation>);
-
-        [Obsolete("Use '.AddSingleton<T1, T2>().Decorated()'.")]
-        public static IServiceCollection AddSingletonDecorated<TInterface, TImplementation>(
-            this IServiceCollection services) where TImplementation : TInterface where TInterface : class
-            => services.AddSingleton(CreateDecorated<TInterface, TImplementation>);
-
-        [Obsolete("Use '.AddTransient<T>().Decorated()'.")]
-        public static IServiceCollection AddTransientDecorated<TImplementation>(
-            this IServiceCollection services) where TImplementation : class
-            => services.AddTransient(CreateDecorated<TImplementation>);
-
-        [Obsolete("Use '.AddTransient<T1, T2>().Decorated()'.")]
-        public static IServiceCollection AddTransientDecorated<TInterface, TImplementation>(
-            this IServiceCollection services) where TImplementation : TInterface where TInterface : class
-            => services.AddTransient(CreateDecorated<TInterface, TImplementation>);
-
 
         public static IServiceCollection TryAddScopedDecorated<TImplementation>(
             this IServiceCollection services) where TImplementation : class
@@ -119,32 +90,6 @@ namespace Decor
             var index = services.Count - 1;
             services.Insert(index, Decorate(descriptor));
             services.RemoveAt(index + 1);
-
-            return services;
-        }
-
-        /// <summary>
-        /// Decorates the specified service type descriptor inside <see cref="IServiceCollection"/>.
-        /// </summary>
-        /// <typeparam name="T">Service type to be decorated</typeparam>
-        public static IServiceCollection Decorate<T>(this IServiceCollection services) where T : class
-        {
-            services.AddDecor();
-
-            var descriptors = services.Where(x => x.ServiceType == typeof(T)).ToArray();
-
-            if (!descriptors.Any())
-            {
-                throw new ArgumentException($"Cannot find the service of type '{typeof(T)}' to decorate. " +
-                    $"Add '{typeof(T)}' to service collection before trying to decorate it.");
-            }
-
-            foreach (var descriptor in descriptors)
-            {
-                var index = services.IndexOf(descriptor);
-                services.Insert(index, Decorate(descriptor));
-                services.RemoveAt(index + 1);
-            }
 
             return services;
         }

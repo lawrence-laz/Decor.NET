@@ -11,7 +11,7 @@
         <PackageProjectUrl>https://github.com/lawrence-laz/Decor.NET</PackageProjectUrl>
         <PackageTags>decorator dynamic-proxy aspect-oriented-programming middleware</PackageTags>
         <Copyright>Copyright 2020</Copyright>
-        <Version>2.0.7</Version>
+        <Version>3.0.0-beta</Version>
         <PackageReleaseNotes></PackageReleaseNotes>
         <RepositoryUrl>https://github.com/lawrence-laz/Decor.NET</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
@@ -19,17 +19,36 @@
         <PackageIcon>icon.png</PackageIcon>
         <PackageIconUrl />
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <LangVersion>preview</LangVersion>
+    </PropertyGroup>
+
+    <!--Can do without this?-->
+    <PropertyGroup>
+        <RestoreAdditionalProjectSources>https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet5/nuget/v3/index.json ;$(RestoreAdditionalProjectSources)</RestoreAdditionalProjectSources>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Castle.Core" Version="4.4.0" />
-        <PackageReference Include="Castle.Core.AsyncInterceptor" Version="1.7.0" />
-        <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+        <!-- <PackageReference Include="Microsoft.CSharp" Version="4.7.0" /> -->
         <None Include="icon.png" Pack="true" PackagePath="" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <!--Source generator dependencies-->
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" />
+        <!-- <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="4.0.0-6.final">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference> -->
     </ItemGroup>
 
     <ItemGroup>
         <InternalsVisibleTo Include="Decor.UnitTests" />
+        <InternalsVisibleTo Include="Decor.Tests" />
     </ItemGroup>
-    
+
 </Project>

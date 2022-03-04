@@ -1,3 +1,7 @@
+<!--TODO: Can I do without nuspec?-->
+<!--TODO: update description: Fody add-in to decorate arbitrary methods to run code before and after invocation.-->
+<!--TODO: Update stack overflow posts-->
+<!-- TODO: Update github description, add wiki?-->
 <?xml version="1.0" encoding="utf-8"?>
 <package>
     <metadata>
