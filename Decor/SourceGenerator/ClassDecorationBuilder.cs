@@ -10,7 +10,7 @@ internal class ClassDecorationBuilder : IDecorationBuilder
 
 }
 
-internal class MethodDecorationbuilder : IDecorationBuilder
+internal class MethodDecorationBuilder : IDecorationBuilder
 {
 
 }
