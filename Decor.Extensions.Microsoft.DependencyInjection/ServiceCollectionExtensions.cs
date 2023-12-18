@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using System.Linq;
+using System.Reflection;
 
 namespace Decor
 {
@@ -103,7 +104,7 @@ namespace Decor
         /// <summary>
         /// Decorates the last registered descriptor inside <see cref="IServiceCollection"/>.
         /// </summary>
-        public static IServiceCollection Decorated(this IServiceCollection services)
+        public static IServiceCollection Decorated(this IServiceCollection services, Func<MethodInfo, Type[]> action = null)
         {
             if (services == null)
             {
@@ -117,7 +118,7 @@ namespace Decor
 
             var descriptor = services.Last();
             var index = services.Count - 1;
-            services.Insert(index, Decorate(descriptor));
+            services.Insert(index, Decorate(descriptor, action));
             services.RemoveAt(index + 1);
 
             return services;
@@ -127,7 +128,7 @@ namespace Decor
         /// Decorates the specified service type descriptor inside <see cref="IServiceCollection"/>.
         /// </summary>
         /// <typeparam name="T">Service type to be decorated</typeparam>
-        public static IServiceCollection Decorate<T>(this IServiceCollection services) where T : class
+        public static IServiceCollection Decorate<T>(this IServiceCollection services, Func<MethodInfo, Type[]> action = null) where T : class
         {
             services.AddDecor();
 
@@ -142,21 +143,21 @@ namespace Decor
             foreach (var descriptor in descriptors)
             {
                 var index = services.IndexOf(descriptor);
-                services.Insert(index, Decorate(descriptor));
+                services.Insert(index, Decorate(descriptor, action));
                 services.RemoveAt(index + 1);
             }
 
             return services;
         }
 
-        private static ServiceDescriptor Decorate(ServiceDescriptor serviceDescriptor)
+        private static ServiceDescriptor Decorate(ServiceDescriptor serviceDescriptor, Func<MethodInfo, Type[]> action = null)
         {
             object DecoratedFactory(IServiceProvider serviceProvider)
             {
                 var implementation = serviceProvider.GetInstance(serviceDescriptor);
                 var decorator = serviceProvider.GetRequiredService<Decorator>();
 
-                return decorator.For(serviceDescriptor.ServiceType, implementation);
+                return decorator.For(serviceDescriptor.ServiceType, implementation, action);
             }
 
             return ServiceDescriptor.Describe(

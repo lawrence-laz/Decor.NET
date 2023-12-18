@@ -13,9 +13,9 @@ namespace Decor.Internal
 
         public MethodDecoratorMap() => _map = new ConcurrentDictionary<Type, ReadOnlyDictionary<MethodInfo, Type[]>>();
 
-        public ReadOnlyDictionary<MethodInfo, Type[]> Get(Type decoratedType) => _map.GetOrAdd(decoratedType, Factory);
+        public ReadOnlyDictionary<MethodInfo, Type[]> Get(Type decoratedType, Func<MethodInfo, Type[]> action = null) => _map.GetOrAdd(decoratedType, Factory(decoratedType, action));
 
-        private static ReadOnlyDictionary<MethodInfo, Type[]> Factory(Type decoratedType)
+        private static ReadOnlyDictionary<MethodInfo, Type[]> Factory(Type decoratedType, Func<MethodInfo, Type[]> methodSelectorAction = null)
         {
             var map = new Dictionary<MethodInfo, Type[]>();
 
@@ -23,16 +23,27 @@ namespace Decor.Internal
 
             foreach (var method in methods)
             {
-                var decoratorAttributes = method.GetCustomAttributes<DecorateAttribute>(true);
-                var interfaceMethod = method.GetInterfaceMethod();
-                if (interfaceMethod != null)
+                if (methodSelectorAction != null)
                 {
-                    decoratorAttributes = decoratorAttributes.Concat(interfaceMethod.GetCustomAttributes<DecorateAttribute>(true));
+                    var actionResult = methodSelectorAction(method);
+                    if (actionResult.Any())
+                    {
+                        map.Add(method, actionResult);
+                    }
                 }
+                else
+                {
+                    var decoratorAttributes = method.GetCustomAttributes<DecorateAttribute>(true);
+                    var interfaceMethod = method.GetInterfaceMethod();
+                    if (interfaceMethod != null)
+                    {
+                        decoratorAttributes = decoratorAttributes.Concat(interfaceMethod.GetCustomAttributes<DecorateAttribute>(true));
+                    }
 
-                var decorators = decoratorAttributes.Select(attribute => attribute.DecoratorType).Distinct().ToArray();
+                    var decorators = decoratorAttributes.Select(attribute => attribute.DecoratorType).Distinct().ToArray();
 
-                map.Add(method, decorators);
+                    map.Add(method, decorators);
+                }
             }
 
             return new ReadOnlyDictionary<MethodInfo, Type[]>(map);
