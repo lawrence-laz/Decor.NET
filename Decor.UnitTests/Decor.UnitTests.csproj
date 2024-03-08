@@ -28,6 +28,13 @@
         <ProjectReference Include="..\Decor\Decor.csproj" />
     </ItemGroup>
 
+    <PropertyGroup Label="Globals">
+      <SccProjectName>SAK</SccProjectName>
+      <SccProvider>SAK</SccProvider>
+      <SccAuxPath>SAK</SccAuxPath>
+      <SccLocalPath>SAK</SccLocalPath>
+    </PropertyGroup>
+
     <PropertyGroup>
         <NoWarn>CA1034, CA1031</NoWarn>
     </PropertyGroup>

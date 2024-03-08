@@ -48,7 +48,7 @@ namespace Decor
         /// <typeparam name="TImplementation">Class for a decorated object to decorate.</typeparam>
         /// <param name="targetObject">Object to be decorated.</param>
         /// <returns>A dynamic proxy with <see cref="IDecorator"/> instances as interceptors.</returns>
-        public TInterface For<TInterface, TImplementation>(TImplementation targetObject) where TImplementation : TInterface 
+        public TInterface For<TInterface, TImplementation>(TImplementation targetObject) where TImplementation : TInterface
             => (TInterface)For(typeof(TInterface), targetObject);
 
         /// <summary>
@@ -66,25 +66,25 @@ namespace Decor
         /// <param name="type">Type of the target object.</param>
         /// <param name="targetObject">Object to be decorated.</param>
         /// <returns>A dynamic proxy with <see cref="IDecorator"/> instances as interceptors.</returns>
-        public object For(Type type, object targetObject)
+        public object For(Type type, object targetObject, Func<MethodInfo, Type[]> action = null)
         {
             if (targetObject == null)
             {
                 throw new ArgumentNullException(nameof(targetObject));
             }
 
-            var interceptor = BuildDecoratorInterceptor(targetObject);
+            var interceptor = BuildDecoratorInterceptor(targetObject, action);
 
             var proxy = type.IsInterface
                 ? _proxyGenerator.CreateInterfaceProxyWithTargetInterface(type, targetObject, interceptor)
-                :_proxyGenerator.CreateClassProxyWithTarget(type, targetObject, interceptor);
+                : _proxyGenerator.CreateClassProxyWithTarget(type, targetObject, interceptor);
 
             return proxy;
         }
 
-        private DecoratorInterceptor BuildDecoratorInterceptor<TImplementation>(TImplementation targetObject)
+        private DecoratorInterceptor BuildDecoratorInterceptor<TImplementation>(TImplementation targetObject, Func<MethodInfo, Type[]> action)
         {
-            var decoratorTypesMap = _methodDecoratorMap.Get(targetObject.GetType());
+            var decoratorTypesMap = _methodDecoratorMap.Get(targetObject.GetType(), action);
             var decoratorInstances = new Dictionary<Type, IDecorator>();
 
             var decoratorsMap = decoratorTypesMap.ToDictionary(
