@@ -25,6 +25,7 @@
         <PackageReference Include="Castle.Core" Version="4.4.0" />
         <PackageReference Include="Castle.Core.AsyncInterceptor" Version="1.7.0" />
         <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+        <PackageReference Include="System.Net.Http" Version="[4.3.4,)" />
         <None Include="icon.png" Pack="true" PackagePath="" />
     </ItemGroup>
 
